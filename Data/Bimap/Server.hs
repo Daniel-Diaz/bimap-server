@@ -72,7 +72,7 @@ import Data.Aeson
     )
 import Data.Binary (Binary, encodeFile, decodeFile)
 import Data.String (fromString)
-import Control.Concurrent (forkIO, threadDelay)
+import Control.Concurrent (forkIO, threadDelay, killThread)
 import Control.Monad (when, forever)
 import System.Posix.Signals
   ( installHandler
@@ -168,8 +168,9 @@ bimapServer _ _ p saveTime = do
            -- 404
            _ -> respr $ responseLBS notFound404 [] "The requested route does not exist, or you are using the wrong method.\n"
          --
-  _ <- forkIO $ runSettings (settings defaultSettings) app
+  th <- forkIO $ runSettings (settings defaultSettings) app
   _ <- installHandler softwareTermination (CatchOnce $ putMVar fv ()) Nothing
   takeMVar fv
   takeMVar sv -- Semaphore is set permanently in red
   readMVar v >>= encodeFile saveFile . BM.toList
+  killThread th -- Kill server
