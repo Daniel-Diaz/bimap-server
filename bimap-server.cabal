@@ -1,5 +1,5 @@
 name:                bimap-server
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Two-column database server.
 description:         A server that stores a database with two columns, where the elements in each column are of the same type.
                      Operations are fast, although memory usage increases with the number of rows. The implementation is based
